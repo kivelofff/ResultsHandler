@@ -8,14 +8,14 @@ import java.util.ArrayList;
 public class FileHandler {
 
     private final String EXTENSION = ".is_xls";
-    private ArrayList<Path> measurementFiles;
+    private ArrayList<Path> measurementFiles = new ArrayList<>();
     private Path path;
 
     public FileHandler(Path path) {
         this.path = path;
     }
 
-    public void openFiles(Path path) throws IOException {
+    public void openFiles() throws IOException {
         if (!path.isAbsolute() || !Files.isDirectory(path)) {throw new FileNotFoundException();}
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
             for (Path file : directoryStream) {

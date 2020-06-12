@@ -3,6 +3,7 @@ package doi;
 import java.math.BigDecimal;
 
 public class IndividualParticleDataSet extends DataSet {
+    private String id;
     private BigDecimal c234U;
     private BigDecimal c234UError;
     private BigDecimal c235U;
@@ -10,10 +11,39 @@ public class IndividualParticleDataSet extends DataSet {
     private BigDecimal c236U;
     private BigDecimal c236UError;
 
-    public IndividualParticleDataSet(double R_234Uto238U, double R_235Uto238U, double R_236Uto238U, double R_238U1Hto238U, double R_234Uto238UError, double R_235Uto238UError, double R_236Uto238UError, double R_238U1Hto238UError) {
+    public IndividualParticleDataSet(String id, double R_234Uto238U, double R_235Uto238U, double R_236Uto238U, double R_238U1Hto238U, double R_234Uto238UError, double R_235Uto238UError, double R_236Uto238UError, double R_238U1Hto238UError) {
         super(R_234Uto238U, R_235Uto238U, R_236Uto238U, R_238U1Hto238U, R_234Uto238UError, R_235Uto238UError, R_236Uto238UError, R_238U1Hto238UError);
+        this.id = id;
         correctU236();
         calculateFinalValues();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public BigDecimal getC234U() {
+        return c234U;
+    }
+
+    public BigDecimal getC234UError() {
+        return c234UError;
+    }
+
+    public BigDecimal getC235U() {
+        return c235U;
+    }
+
+    public BigDecimal getC235UError() {
+        return c235UError;
+    }
+
+    public BigDecimal getC236U() {
+        return c236U;
+    }
+
+    public BigDecimal getC236UError() {
+        return c236UError;
     }
 
 
