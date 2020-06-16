@@ -10,6 +10,7 @@ public class IndividualParticleDataSet extends DataSet {
     private BigDecimal c235UError;
     private BigDecimal c236U;
     private BigDecimal c236UError;
+    private final BigDecimal HUNDRED = new BigDecimal(100);
 
     public IndividualParticleDataSet(String id, double R_234Uto238U, double R_235Uto238U, double R_236Uto238U, double R_238U1Hto238U, double R_234Uto238UError, double R_235Uto238UError, double R_236Uto238UError, double R_238U1Hto238UError) {
         super(R_234Uto238U, R_235Uto238U, R_236Uto238U, R_238U1Hto238U, R_234Uto238UError, R_235Uto238UError, R_236Uto238UError, R_238U1Hto238UError);
@@ -49,10 +50,10 @@ public class IndividualParticleDataSet extends DataSet {
 
     @Override
     public void calculateFinalValues() {
-        BigDecimal denominator = R_234Uto238U.add(R_235Uto238U.add(R_236Uto238Ucorr));
-        c234U = divide(R_234Uto238U, denominator);
-        c235U = divide(R_235Uto238U, denominator);
-        c236U = divide(R_236Uto238Ucorr, denominator);
+        BigDecimal denominator = R_234Uto238U.add(R_235Uto238U.add(R_236Uto238Ucorr).add(new BigDecimal(1)));
+        c234U = divide(R_234Uto238U, denominator).multiply(HUNDRED);
+        c235U = divide(R_235Uto238U, denominator).multiply(HUNDRED);
+        c236U = divide(R_236Uto238Ucorr, denominator).multiply(HUNDRED);
         calculateConcentrationError();
     }
 
@@ -75,5 +76,10 @@ public class IndividualParticleDataSet extends DataSet {
 
     public void exportData() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "result: " + id + "//" + c234U + "//" + c235U + "//" + c236U;
     }
 }
