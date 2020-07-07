@@ -7,12 +7,12 @@ public abstract class DataSet {
     protected final int SCALE_FOR_DIVIDING = 9;
     protected BigDecimal R_234Uto238U;
     protected BigDecimal R_235Uto238U;
-    private BigDecimal R_236Uto238U;
+    protected BigDecimal R_236Uto238U;
     protected BigDecimal R_236Uto238Ucorr;
     protected BigDecimal R_238U1Hto238U;
     protected BigDecimal R_234Uto238UError;
     protected BigDecimal R_235Uto238UError;
-    private BigDecimal R_236Uto238UError;
+    protected BigDecimal R_236Uto238UError;
     protected BigDecimal R_236Uto238UcorrError;
     protected BigDecimal R_238U1Hto238UError;
 
@@ -26,6 +26,20 @@ public abstract class DataSet {
         this.R_236Uto238UError = new BigDecimal(R_236Uto238UError);
         this.R_238U1Hto238UError = new BigDecimal(R_238U1Hto238UError);
 
+    }
+
+    public DataSet(BigDecimal r_234Uto238U, BigDecimal r_235Uto238U, BigDecimal r_236Uto238U, BigDecimal r_238U1Hto238U, BigDecimal r_234Uto238UError, BigDecimal r_235Uto238UError, BigDecimal r_236Uto238UError, BigDecimal r_238U1Hto238UError) {
+        R_234Uto238U = r_234Uto238U;
+        R_235Uto238U = r_235Uto238U;
+        R_236Uto238U = r_236Uto238U;
+        R_238U1Hto238U = r_238U1Hto238U;
+        R_234Uto238UError = r_234Uto238UError;
+        R_235Uto238UError = r_235Uto238UError;
+        R_236Uto238UError = r_236Uto238UError;
+        R_238U1Hto238UError = r_238U1Hto238UError;
+    }
+
+    public DataSet() {
     }
 
     protected BigDecimal divide(BigDecimal numerator, BigDecimal denominator) {

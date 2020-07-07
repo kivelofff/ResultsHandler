@@ -19,6 +19,17 @@ public class IndividualParticleDataSet extends DataSet {
         calculateFinalValues();
     }
 
+    public IndividualParticleDataSet(String id, BigDecimal R_234Uto238U, BigDecimal R_235Uto238U, BigDecimal R_236Uto238U, BigDecimal R_238U1Hto238U, BigDecimal R_234Uto238UError, BigDecimal R_235Uto238UError, BigDecimal R_236Uto238UError, BigDecimal R_238U1Hto238UError) {
+        super(R_234Uto238U, R_235Uto238U, R_236Uto238U, R_238U1Hto238U, R_234Uto238UError, R_235Uto238UError, R_236Uto238UError, R_238U1Hto238UError);
+        this.id = id;
+        correctU236();
+        calculateFinalValues();
+    }
+
+    public IndividualParticleDataSet(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
