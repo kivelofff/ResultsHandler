@@ -1,8 +1,6 @@
+import doi.DataSet;
 import doi.IndividualParticleDataSet;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import doi.IndividualParticleRawDataSet;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
@@ -10,8 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.nio.file.FileSystemException;
-import java.nio.file.Files;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,6 +18,13 @@ public class Controller {
     private FileHandler fileHandler;
     private final String MAIN_MARKER = "ISOTOPICS RATIO";
     ArrayList<IndividualParticleDataSet> results = new ArrayList<>();
+    private BigDecimal mbCoeff234U = BigDecimal.ONE;
+    private BigDecimal mbCoeff235U = BigDecimal.ONE;
+    private BigDecimal mbCoeff236U = BigDecimal.ONE;
+
+    private BigDecimal CertR234U = new BigDecimal(5.46552978e-5);
+    private BigDecimal CertR235U = new BigDecimal(0.0101400226);
+    private BigDecimal CertR236U = new BigDecimal(6.8798998e-5);
 
     public void setFileHandler(FileHandler fileHandler) {
         this.fileHandler = fileHandler;
@@ -30,11 +34,22 @@ public class Controller {
         Controller controller = new Controller();
         Scanner sc = new Scanner(System.in);
         System.out.println("This small tool allow to make common table of SIMS U-results.");
-        System.out.println("Please, enter full path to the folder with results:");
+        System.out.println("Please, enter full path to the folder with mass bias measurement results or type 'skip' to skip:");
         String inputPath = sc.nextLine();
+        if (!inputPath.equals("skip")) {
+            controller.setFileHandler(new FileHandler(Paths.get(inputPath)));
+            try {
+                controller.calculateMassBiasCoefficients();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("mass bias coefficients was calculated successfully");
+        }
+        System.out.println("Please, enter full path to the folder with results:");
+        inputPath = sc.nextLine();
         controller.setFileHandler(new FileHandler(Paths.get(inputPath)));
         try {
-            controller.getResultsFromFiles();
+            controller.getResultsFromCKBFiles();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,7 +69,7 @@ public class Controller {
 
     }
 
-    public void getResultsFromFiles() throws IOException {
+    public void getResultsFromDPFiles() throws IOException {
         fileHandler.openFiles();
         ArrayList<Path> files = fileHandler.getMeasurementFiles();
 
@@ -91,6 +106,86 @@ public class Controller {
             results.add(result);
             System.out.println("Readed: " + result);
         }
+    }
+
+    public void getResultsFromCKBFiles() throws IOException {
+        results.clear();
+        fileHandler.openFiles();
+        ArrayList<Path> files = fileHandler.getMeasurementFiles();
+        for (int i = 0; i < files.size(); i++) {
+            BufferedReader stringReader = new BufferedReader(new FileReader(files.get(i).toFile()));
+            String currentString;
+            String[] currentStringAsArr;
+            currentString = stringReader.readLine();
+            while (!currentString.startsWith("Raw data file name")) {
+                currentString = stringReader.readLine();
+            }
+            currentStringAsArr = currentString.split(";");
+            String particleId =currentStringAsArr[1];
+            while (!currentString.startsWith("Time[s]")) {
+                currentString = stringReader.readLine();
+            }
+            ArrayList<Double> I234U = new ArrayList<>(20);
+            ArrayList<Double> I235U = new ArrayList<>(20);
+            ArrayList<Double> I236U = new ArrayList<>(20);
+            ArrayList<Double> I238U = new ArrayList<>(20);
+            ArrayList<Double> I238U1H = new ArrayList<>(20);
+            currentString = stringReader.readLine();
+            while (!currentString.equals("")) {
+
+                currentStringAsArr = currentString.split(";");
+                I234U.add(Double.valueOf(currentStringAsArr[2]));
+                I235U.add(Double.valueOf(currentStringAsArr[5]));
+                I236U.add(Double.valueOf(currentStringAsArr[8]));
+                I238U.add(Double.valueOf(currentStringAsArr[11]));
+                I238U1H.add(Double.valueOf(currentStringAsArr[14]));
+                currentString = stringReader.readLine();
+            }
+            int nuberofCycles = I234U.size();
+
+            double[] i234U = new double[nuberofCycles];
+            double[] i235U = new double[nuberofCycles];
+            double[] i236U = new double[nuberofCycles];
+            double[] i238U = new double[nuberofCycles];
+            double[] i238U1H = new double[nuberofCycles];
+
+            for (int j = 0; j < nuberofCycles; j++) {
+                i234U[j] = I234U.get(j);
+                i235U[j] = I235U.get(j);
+                i236U[j] = I236U.get(j);
+                i238U[j] = I238U.get(j);
+                i238U1H[j] = I238U1H.get(j);
+            }
+
+            IndividualParticleRawDataSet individualParticleRawDataSet;
+            individualParticleRawDataSet = new IndividualParticleRawDataSet(particleId, i234U, i235U, i236U, i238U, i238U1H, mbCoeff234U, mbCoeff235U, mbCoeff236U);
+            results.add(individualParticleRawDataSet);
+
+
+        }
+    }
+
+    private void calculateMassBiasCoefficients() throws IOException {
+        fileHandler.openFiles();
+        ArrayList<Path> files = fileHandler.getMeasurementFiles();
+        mbCoeff234U = BigDecimal.ONE;
+        mbCoeff235U = BigDecimal.ONE;
+        mbCoeff236U = BigDecimal.ONE;
+        results.clear();
+        getResultsFromCKBFiles();
+        BigDecimal sumR234U = BigDecimal.ZERO;
+        BigDecimal sumR235U = BigDecimal.ZERO;
+        BigDecimal sumR236U = BigDecimal.ZERO;
+        int numberofMBMeasurements = results.size();
+        for (int i = 0; i < numberofMBMeasurements; i++) {
+            sumR234U = sumR234U.add(results.get(i).getR_234Uto238U());
+            sumR235U = sumR235U.add(results.get(i).getR_235Uto238U());
+            sumR236U = sumR236U.add(results.get(i).getR_236Uto238U());
+        }
+
+        mbCoeff234U = DataSet.divide(DataSet.divide(sumR234U, new BigDecimal(numberofMBMeasurements)), CertR234U);
+        mbCoeff235U = DataSet.divide(DataSet.divide(sumR235U, new BigDecimal(numberofMBMeasurements)), CertR235U);
+        mbCoeff236U = DataSet.divide(DataSet.divide(sumR236U, new BigDecimal(numberofMBMeasurements)), CertR236U);
     }
 
     public void putInTheTable(String filePath) throws IOException, InvalidFormatException {

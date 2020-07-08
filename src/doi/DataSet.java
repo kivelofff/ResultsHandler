@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public abstract class DataSet {
     protected final BigDecimal ZERO = new BigDecimal(0);
-    protected final int SCALE_FOR_DIVIDING = 9;
+    protected static final int SCALE_FOR_DIVIDING = 9;
     protected BigDecimal R_234Uto238U;
     protected BigDecimal R_235Uto238U;
     protected BigDecimal R_236Uto238U;
@@ -42,7 +42,8 @@ public abstract class DataSet {
     public DataSet() {
     }
 
-    protected BigDecimal divide(BigDecimal numerator, BigDecimal denominator) {
+    public static BigDecimal divide(BigDecimal numerator, BigDecimal denominator) {
+
         return numerator.divide(denominator, SCALE_FOR_DIVIDING, BigDecimal.ROUND_HALF_UP);
     }
 

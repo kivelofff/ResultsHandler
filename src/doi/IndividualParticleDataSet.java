@@ -81,7 +81,12 @@ public class IndividualParticleDataSet extends DataSet {
         c234UError = c234U.multiply(c234URelError);
         BigDecimal c235URelError = divide(otherFor235UError, otherFor235U).add(divide(R_235Uto238UError, R_235Uto238U));
         c235UError = c235U.multiply(c235URelError);
-        BigDecimal c236URelError = divide(otherFor236UError, otherFor236U).add(divide(R_236Uto238UcorrError, R_236Uto238Ucorr));
+        BigDecimal c236URelError;
+        if (R_236Uto238Ucorr.compareTo(BigDecimal.ZERO)==0) {
+            c236URelError = divide(otherFor236UError, otherFor236U);
+        } else {
+            c236URelError = divide(otherFor236UError, otherFor236U).add(divide(R_236Uto238UcorrError, R_236Uto238Ucorr));
+        }
         c236UError = c236U.multiply(c236URelError);
     }
 
