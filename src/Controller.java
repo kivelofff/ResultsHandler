@@ -39,7 +39,7 @@ public class Controller {
         if (!inputPath.equals("skip")) {
             controller.setFileHandler(new FileHandler(Paths.get(inputPath)));
             try {
-                controller.calculateMassBiasCoefficients();
+                controller.calculateMassBiasCoefficientsFromDP();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -49,7 +49,7 @@ public class Controller {
         inputPath = sc.nextLine();
         controller.setFileHandler(new FileHandler(Paths.get(inputPath)));
         try {
-            controller.getResultsFromCKBFiles();
+            controller.getResultsFromDPFiles();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class Controller {
             currentStringAsArr = currentString.split("\t\\s");
             double r_238U1Hto238U = Double.valueOf(currentStringAsArr[1]);
             double r_238U1Hto238UErr = Double.valueOf(currentStringAsArr[2]);
-            IndividualParticleDataSet result = new IndividualParticleDataSet(ParticleId, r_234Uto238U, r_235Uto238U, r_236Uto238U, r_238U1Hto238U, r_234Uto238UErr, r_235Uto238UErr, r_236Uto238UErr, r_238U1Hto238UErr);
+            IndividualParticleDataSet result = new IndividualParticleDataSet(ParticleId, r_234Uto238U, r_235Uto238U, r_236Uto238U, r_238U1Hto238U, r_234Uto238UErr, r_235Uto238UErr, r_236Uto238UErr, r_238U1Hto238UErr, mbCoeff234U, mbCoeff235U, mbCoeff236U);
             results.add(result);
             System.out.println("Readed: " + result);
         }
@@ -160,12 +160,34 @@ public class Controller {
             IndividualParticleRawDataSet individualParticleRawDataSet;
             individualParticleRawDataSet = new IndividualParticleRawDataSet(particleId, i234U, i235U, i236U, i238U, i238U1H, mbCoeff234U, mbCoeff235U, mbCoeff236U);
             results.add(individualParticleRawDataSet);
-
-
         }
+
     }
 
-    private void calculateMassBiasCoefficients() throws IOException {
+    private void calculateMassBiasCoefficientsFromDP() throws IOException {
+        fileHandler.openFiles();
+        ArrayList<Path> files = fileHandler.getMeasurementFiles();
+        mbCoeff234U = BigDecimal.ONE;
+        mbCoeff235U = BigDecimal.ONE;
+        mbCoeff236U = BigDecimal.ONE;
+        results.clear();
+        getResultsFromDPFiles();
+        BigDecimal sumR234U = BigDecimal.ZERO;
+        BigDecimal sumR235U = BigDecimal.ZERO;
+        BigDecimal sumR236U = BigDecimal.ZERO;
+        int numberofMBMeasurements = results.size();
+        for (int i = 0; i < numberofMBMeasurements; i++) {
+            sumR234U = sumR234U.add(results.get(i).getR_234Uto238U());
+            sumR235U = sumR235U.add(results.get(i).getR_235Uto238U());
+            sumR236U = sumR236U.add(results.get(i).getR_236Uto238U());
+        }
+
+        mbCoeff234U = DataSet.divide(DataSet.divide(sumR234U, new BigDecimal(numberofMBMeasurements)), CertR234U);
+        mbCoeff235U = DataSet.divide(DataSet.divide(sumR235U, new BigDecimal(numberofMBMeasurements)), CertR235U);
+        mbCoeff236U = DataSet.divide(DataSet.divide(sumR236U, new BigDecimal(numberofMBMeasurements)), CertR236U);
+    }
+
+    private void calculateMassBiasCoefficientsFromCKB() throws IOException {
         fileHandler.openFiles();
         ArrayList<Path> files = fileHandler.getMeasurementFiles();
         mbCoeff234U = BigDecimal.ONE;

@@ -12,19 +12,15 @@ public class IndividualParticleDataSet extends DataSet {
     private BigDecimal c236UError;
     private final BigDecimal HUNDRED = new BigDecimal(100);
 
-    public IndividualParticleDataSet(String id, double R_234Uto238U, double R_235Uto238U, double R_236Uto238U, double R_238U1Hto238U, double R_234Uto238UError, double R_235Uto238UError, double R_236Uto238UError, double R_238U1Hto238UError) {
+    public IndividualParticleDataSet(String id, double R_234Uto238U, double R_235Uto238U, double R_236Uto238U, double R_238U1Hto238U, double R_234Uto238UError, double R_235Uto238UError, double R_236Uto238UError, double R_238U1Hto238UError, BigDecimal mbCoeff234U, BigDecimal mbCoeff235U, BigDecimal mbCoeff236U) throws WrongRawDataException {
         super(R_234Uto238U, R_235Uto238U, R_236Uto238U, R_238U1Hto238U, R_234Uto238UError, R_235Uto238UError, R_236Uto238UError, R_238U1Hto238UError);
         this.id = id;
+
+        applyMassBias(mbCoeff234U, mbCoeff235U, mbCoeff236U);
         correctU236();
         calculateFinalValues();
     }
 
-    public IndividualParticleDataSet(String id, BigDecimal R_234Uto238U, BigDecimal R_235Uto238U, BigDecimal R_236Uto238U, BigDecimal R_238U1Hto238U, BigDecimal R_234Uto238UError, BigDecimal R_235Uto238UError, BigDecimal R_236Uto238UError, BigDecimal R_238U1Hto238UError) {
-        super(R_234Uto238U, R_235Uto238U, R_236Uto238U, R_238U1Hto238U, R_234Uto238UError, R_235Uto238UError, R_236Uto238UError, R_238U1Hto238UError);
-        this.id = id;
-        correctU236();
-        calculateFinalValues();
-    }
 
     public IndividualParticleDataSet(String id) {
         this.id = id;
@@ -88,6 +84,12 @@ public class IndividualParticleDataSet extends DataSet {
             c236URelError = divide(otherFor236UError, otherFor236U).add(divide(R_236Uto238UcorrError, R_236Uto238Ucorr));
         }
         c236UError = c236U.multiply(c236URelError);
+    }
+
+    public void applyMassBias(BigDecimal mbCoeff234U, BigDecimal mbCoeff235U, BigDecimal mbCoeff236U) throws WrongRawDataException {
+        R_234Uto238U = divide(R_234Uto238U, mbCoeff234U);
+        R_235Uto238U = divide(R_234Uto238U, mbCoeff235U);
+        R_236Uto238U = divide(R_234Uto238U, mbCoeff236U);
     }
 
     public void exportData() {

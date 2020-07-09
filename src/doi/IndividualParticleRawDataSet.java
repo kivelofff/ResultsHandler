@@ -182,6 +182,7 @@ public class IndividualParticleRawDataSet extends IndividualParticleDataSet {
         I238U1H = I238U1Hcorr;
     }
 
+    @Override
     public void applyMassBias(BigDecimal mbCoeff234U, BigDecimal mbCoeff235U, BigDecimal mbCoeff236U) throws WrongRawDataException {
         checkRawData();
         int numberOfcycles = I234U.length;
