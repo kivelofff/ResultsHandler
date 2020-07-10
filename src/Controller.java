@@ -70,6 +70,7 @@ public class Controller {
     }
 
     public void getResultsFromDPFiles() throws IOException {
+        results.clear();
         fileHandler.openFiles();
         ArrayList<Path> files = fileHandler.getMeasurementFiles();
 

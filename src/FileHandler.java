@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public class FileHandler {
 
-    private final String EXTENSION = ".dp_rpc_txt";
+    //private final String EXTENSION = ".dp_rpc_txt";
+    private final String EXTENSION = ".is_xls";
     private ArrayList<Path> measurementFiles = new ArrayList<>();
     private Path path;
 

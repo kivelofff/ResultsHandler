@@ -73,9 +73,9 @@ public class IndividualParticleDataSet extends DataSet {
         BigDecimal otherFor235UError = R_234Uto238UError.add(R_236Uto238UcorrError);
         BigDecimal otherFor236UError = R_234Uto238UError.add(R_235Uto238UError);
 
-        BigDecimal c234URelError = divide(otherFor234UError, otherFor234U).add(divide(R_234Uto238UError, R_234Uto238U));
+        BigDecimal c234URelError = divide(R_234Uto238UError, R_234Uto238U);
         c234UError = c234U.multiply(c234URelError);
-        BigDecimal c235URelError = divide(otherFor235UError, otherFor235U).add(divide(R_235Uto238UError, R_235Uto238U));
+        BigDecimal c235URelError = divide(R_235Uto238UError, R_235Uto238U);
         c235UError = c235U.multiply(c235URelError);
         BigDecimal c236URelError;
         if (R_236Uto238Ucorr.compareTo(BigDecimal.ZERO)==0) {
@@ -88,8 +88,8 @@ public class IndividualParticleDataSet extends DataSet {
 
     public void applyMassBias(BigDecimal mbCoeff234U, BigDecimal mbCoeff235U, BigDecimal mbCoeff236U) throws WrongRawDataException {
         R_234Uto238U = divide(R_234Uto238U, mbCoeff234U);
-        R_235Uto238U = divide(R_234Uto238U, mbCoeff235U);
-        R_236Uto238U = divide(R_234Uto238U, mbCoeff236U);
+        R_235Uto238U = divide(R_235Uto238U, mbCoeff235U);
+        R_236Uto238U = divide(R_236Uto238U, mbCoeff236U);
     }
 
     public void exportData() {
