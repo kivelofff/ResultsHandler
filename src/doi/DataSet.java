@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public abstract class DataSet {
     protected final BigDecimal ZERO = new BigDecimal(0);
-    protected static final int SCALE_FOR_DIVIDING = 9;
+    protected static final int SCALE_FOR_DIVIDING = 19;
     protected BigDecimal R_234Uto238U;
     protected BigDecimal R_235Uto238U;
     protected BigDecimal R_236Uto238U;

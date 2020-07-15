@@ -50,8 +50,8 @@ public class IndividualParticleRawDataSet extends IndividualParticleDataSet {
         }
 
        // applyYieldCorrection(1, 0.0);
-       // applyDeadTimeCorrection(27e-9);
-       // applyLinearDriftCorrection();
+       applyDeadTimeCorrection(27e-9);
+       applyLinearDriftCorrection();
 
         R234Uto238U = new BigDecimal[numberOfCycles];
         R235Uto238U = new BigDecimal[numberOfCycles];
@@ -114,7 +114,8 @@ public class IndividualParticleRawDataSet extends IndividualParticleDataSet {
         for (int i = 0; i < dataOverBlocks.length; i++) {
             powSum = powSum.add((dataOverBlocks[i].subtract(averageOverAnalysis)).pow(2));
         }
-        BigDecimal stdeSquared = divide(powSum, new BigDecimal(blockNumber-1));
+
+        BigDecimal stdeSquared = divide(powSum, new BigDecimal(blockNumber-1)).setScale(15,BigDecimal.ROUND_HALF_UP);
         return new BigDecimal(Math.sqrt(stdeSquared.doubleValue()));
 
     }

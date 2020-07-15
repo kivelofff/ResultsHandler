@@ -39,7 +39,7 @@ public class Controller {
         if (!inputPath.equals("skip")) {
             controller.setFileHandler(new FileHandler(Paths.get(inputPath)));
             try {
-                controller.calculateMassBiasCoefficientsFromDP();
+                controller.calculateMassBiasCoefficientsFromCKB();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -49,7 +49,7 @@ public class Controller {
         inputPath = sc.nextLine();
         controller.setFileHandler(new FileHandler(Paths.get(inputPath)));
         try {
-            controller.getResultsFromDPFiles();
+            controller.getResultsFromCKBFiles();
 
         } catch (IOException e) {
             e.printStackTrace();
