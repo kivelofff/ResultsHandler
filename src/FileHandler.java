@@ -7,20 +7,22 @@ import java.util.ArrayList;
 
 public class FileHandler {
 
-    private final String EXTENSION = ".dp_rpc_txt";
-    //private final String EXTENSION = ".is_xls";
+    public static final String EXTENSION_CKB = ".dp_rpc_txt";
+    public static final String EXTENSION_DP = ".is_xls";
+    private String extension;
     private ArrayList<Path> measurementFiles = new ArrayList<>();
     private Path path;
 
-    public FileHandler(Path path) {
+    public FileHandler(Path path, String extension) {
         this.path = path;
+        this.extension = extension;
     }
 
     public void openFiles() throws IOException {
         if (!path.isAbsolute() || !Files.isDirectory(path)) {throw new FileNotFoundException();}
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
             for (Path file : directoryStream) {
-                if (Files.isRegularFile(file) && file.toString().toLowerCase().endsWith(EXTENSION)) {
+                if (Files.isRegularFile(file) && file.toString().toLowerCase().endsWith(extension)) {
                     measurementFiles.add(file);
                 }
             }

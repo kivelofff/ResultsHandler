@@ -37,23 +37,59 @@ public class Controller {
         System.out.println("Please, enter full path to the folder with mass bias measurement results or type 'skip' to skip:");
         String inputPath = sc.nextLine();
         if (!inputPath.equals("skip")) {
-            controller.setFileHandler(new FileHandler(Paths.get(inputPath)));
-            try {
-                controller.calculateMassBiasCoefficientsFromCKB();
-            } catch (IOException e) {
-                e.printStackTrace();
+            String selectType = "";
+            while (!selectType.equals("1") && !selectType.equals("2")) {
+                System.out.println("Please, specify the measurement result type for mass bias, type:");
+                System.out.println("1 - for cheker board results (results should be with .dp_rpc_txt extension)");
+                System.out.println("2 - for depth profiling results (results should be with .is_xls extension)");
+                selectType = sc.nextLine();
+                if (selectType.equals("1")) {
+                    controller.setFileHandler(new FileHandler(Paths.get(inputPath), FileHandler.EXTENSION_CKB));
+                    try {
+                        controller.calculateMassBiasCoefficientsFromCKB();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("mass bias coefficients was calculated successfully");
+                } else if (selectType.equals("2")) {
+                    controller.setFileHandler(new FileHandler(Paths.get(inputPath), FileHandler.EXTENSION_DP));
+                    try {
+                        controller.calculateMassBiasCoefficientsFromDP();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("mass bias coefficients was calculated successfully");
+                }
             }
-            System.out.println("mass bias coefficients was calculated successfully");
         }
+
         System.out.println("Please, enter full path to the folder with results:");
         inputPath = sc.nextLine();
-        controller.setFileHandler(new FileHandler(Paths.get(inputPath)));
-        try {
-            controller.getResultsFromCKBFiles();
+        String selectMeasurementType = "";
+        while (!selectMeasurementType.equals("1") && !selectMeasurementType.equals("2")) {
+            System.out.println("Please, specify the measurement result type for mass bias, type:");
+            System.out.println("1 - for cheker board results (results should be with .dp_rpc_txt extension)");
+            System.out.println("2 - for depth profiling results (results should be with .is_xls extension)");
+            selectMeasurementType = sc.nextLine();
+            if (selectMeasurementType.equals("1")) {
+                controller.setFileHandler(new FileHandler(Paths.get(inputPath), FileHandler.EXTENSION_CKB));
+                try {
+                    controller.getResultsFromCKBFiles();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } else if (selectMeasurementType.equals("2")) {
+                controller.setFileHandler(new FileHandler(Paths.get(inputPath), FileHandler.EXTENSION_DP));
+                try {
+                    controller.getResultsFromDPFiles();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
+
         System.out.println("Results was successfully calculated");
         System.out.println("Please type full path to output file (with extension):");
         String outputPath = sc.nextLine();
