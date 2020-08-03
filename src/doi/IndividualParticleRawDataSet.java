@@ -69,9 +69,9 @@ public class IndividualParticleRawDataSet extends IndividualParticleDataSet {
         applyMassBias(mbCoeff234U, mbCoeff235U, mbCoeff236U);
 
         R_234Uto238U  = calculateAverageValue(R234Uto238U);
-        System.out.println("Average R234:" + R_234Uto238U);
+
         R_235Uto238U  = calculateAverageValue(R235Uto238U);
-        System.out.println("Average R235:" + R_235Uto238U);
+
         R_236Uto238U  = calculateAverageValue(R236Uto238U);
 
         R_238U1Hto238U  = calculateAverageValue(R238U1Hto238U);
@@ -80,7 +80,7 @@ public class IndividualParticleRawDataSet extends IndividualParticleDataSet {
         R_236Uto238UError = calculateSTDEValue(R236Uto238U);
         R_238U1Hto238UError = calculateSTDEValue(R238U1Hto238U);
         correctU236();
-        System.out.println("Average R236corr:" + R_236Uto238Ucorr);
+
 
         calculateFinalValues();
 
@@ -141,22 +141,21 @@ public class IndividualParticleRawDataSet extends IndividualParticleDataSet {
     public void applyDeadTimeCorrection(double tau) throws WrongRawDataException {
         checkRawData();
         BigDecimal t = new BigDecimal(tau);
-        System.out.println("Dead time corrected data: --------------------------------------------------------");
+
         for (int i = 0; i < I234U.length; i++) {
 
             I234U[i] = divide(I234U[i], (BigDecimal.ONE.subtract(I234U[i].multiply(t))));
-            System.out.println("I_U234["+ i + "]: " + I234U[i]);
+
             I235U[i] = divide(I235U[i], (BigDecimal.ONE.subtract(I235U[i].multiply(t))));
-            System.out.println("I_U235["+ i + "]: " + I235U[i]);
+
             I236U[i] = divide(I236U[i], (BigDecimal.ONE.subtract(I236U[i].multiply(t))));
-            System.out.println("I_U236["+ i + "]: " + I236U[i]);
+
             I238U[i] = divide(I238U[i], (BigDecimal.ONE.subtract(I238U[i].multiply(t))));
-            System.out.println("I_U238["+ i + "]: " + I238U[i]);
+
             I238U1H[i] = divide(I238U1H[i], (BigDecimal.ONE.subtract(I238U1H[i].multiply(t))));
-            System.out.println("I_U239["+ i + "]: " + I238U1H[i]);
-            System.out.println();
+
         }
-        System.out.println("----------------------------------------------------------------------------------");
+
     }
 
     public void applyLinearDriftCorrection() throws WrongRawDataException {
@@ -194,12 +193,7 @@ public class IndividualParticleRawDataSet extends IndividualParticleDataSet {
         I236U = I236Ucorr;
         I238U = I238Ucorr;
         I238U1H = I238U1Hcorr;
-        System.out.println("Linear Drift: ------------------------------------------------------------------------------------------------------");
-        System.out.println(Arrays.toString(I234U));
-        System.out.println(Arrays.toString(I235U));
-        System.out.println(Arrays.toString(I236U));
-        System.out.println(Arrays.toString(I238U));
-        System.out.println(Arrays.toString(I238U1H));
+
     }
 
     @Override
